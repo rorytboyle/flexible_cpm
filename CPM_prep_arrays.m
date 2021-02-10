@@ -1,7 +1,7 @@
 function [no_sub, no_node, no_covars, behav_pred_pos, behav_pred_neg,...
     behav_pred_combined, parameters_pos, parameters_neg,...
     parameters_combined, pos_mask_all, neg_mask_all] = ...
-    CPM_prep_arrays(all_mats, all_covars, k)
+    CPM_prep_arrays(all_mats, all_covars, k, adjust_stage)
 % Prepares and preallocates arrays for connectome-based predictive model.
 %
 % INPUT: as described in run_flexible_CPM.
@@ -56,12 +56,19 @@ behav_pred_neg = zeros(no_sub,1);
 behav_pred_combined = zeros(no_sub, 1);
 
 % preallocate arrays to store paramaters of regression models in each fold
-% col 1 = intercept, col 2 = network strength slope
-% if covars included, col 3 = covar 1 intercept, col 4 = covar 1 intercept, 
+% col 1 = intercept, col 2 = network strength slope.
+% if covars are included, and are adjusted for at the model fitting step
+% (step 6), then col 3 = covar 1 intercept, col 4 = covar 1 intercept, 
 % and so on...
-parameters_pos = zeros(k, 2 + no_covars);
-parameters_neg = zeros(k, 2 + no_covars);
-parameters_combined = zeros(k, 2 + no_covars);
+if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
+    parameters_pos = zeros(k, 2 + no_covars);
+    parameters_neg = zeros(k, 2 + no_covars);
+    parameters_combined = zeros(k, 2 + no_covars);
+else
+    parameters_pos = zeros(k, 2);
+    parameters_neg = zeros(k, 2);
+    parameters_combined = zeros(k, 2);
+end
 
 % preallocate arrays to store selected edges in each fold
 pos_mask_all = zeros(no_node, no_node, k);
