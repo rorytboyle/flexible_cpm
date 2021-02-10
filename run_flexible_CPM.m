@@ -1,7 +1,8 @@
 function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
     parameters_pos, parameters_neg, parameters_combined,...
     pos_mask_all, neg_mask_all, no_node, no_covars] = ...
-    run_flexible_CPM(all_behav, all_mats, all_covars, k, thresh)
+    run_flexible_CPM(all_behav, all_mats, all_covars, k, thresh,...
+    adjust_stage)
 % Runs connectome-based predictive modelling with cross-validation. Enables
 % choice of different k-fold cross-validation schemes (can specify LOOCV by
 % calling k = number of participants) and allows for covariates to be
@@ -24,6 +25,18 @@ function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
 %                   of participants will run leave-one-out
 %                   cross-validation.
 % thresh =          (double) p-value for feature selection threshold.
+% adjust_stage      (string) specifies stage of CPM at which covariates
+%                   should be adjusted for. 'relate' will adjust for 
+%                   covariates at the feature selection step (step 3) by 
+%                   running a partial correlation between edges and target 
+%                   variable, controlling for covariates. 'fit' will adjust
+%                   for covariates at the model fitting step (step 6) by
+%                   including covariates in a multiple regression
+%                   predicting target variable from network strength.
+%                   'both' will adjust for covariates at both feature
+%                   selection (step 3) and model fitting (step 6) steps. If
+%                   covariates are not being considered, specify an empty 
+%                   string ''.
 %
 % OUTPUT:
 % behav_pred_pos =      (array) n * 1 where n = number of participants.
@@ -55,13 +68,15 @@ function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
 % Author: Rory Boyle
 % Contact: rorytboyle@gmail.com
 % Date: 24/01/2021
+% Last updated: 10/02/2021 added functionality to adjust for covariates at
+% feature selection step (step 3).
 %
 %% 1) Prepare cross-validated CPM
 % preallocate arrays
 [no_sub, no_node, no_covars, behav_pred_pos, behav_pred_neg,...
     behav_pred_combined, parameters_pos, parameters_neg,...
     parameters_combined, pos_mask_all, neg_mask_all] =...
-    CPM_prep_arrays(all_mats, all_covars, k);
+    CPM_prep_arrays(all_mats, all_covars, k, adjust_stage);
 
 % specify cross-validation scheme
 kfold_partition = cvpartition(no_sub, 'KFold', k);
@@ -80,7 +95,14 @@ for fold = 1:k
     
     % feature selection - relate edges to target variable (Step 3 - Shen et
     % al. 2017)
-    [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node);
+    % use partial correlation if specified - otherwise use normal
+    % correlation
+    if strcmp(adjust_stage, 'relate') | strcmp(adjust_stage, 'both')
+        [r_mat, p_mat] = CPM_fs_relate_partial(train_vcts, train_behav, ...
+            train_covars, no_node);
+    else
+        [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node);
+    end
 
     % feature selection - select edges (Step 4 - Shen et al. 2017)
     [pos_mask, neg_mask] = CPM_fs_select(r_mat, p_mat, thresh, no_node);
@@ -91,14 +113,29 @@ for fold = 1:k
         CPM_network_strength(train_mats, pos_mask, neg_mask, ix_train);
     
     % fit model on training set (Step 6 - Shen et al. 2017)
-    [fit_pos, fit_neg, fit_combined] = ...
+    % include covars in multiple regression if specified - otherwise use 
+    % simple linear regression
+    if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
+        [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, train_covars, no_covars, ...
         train_sumpos, train_sumneg, train_sumcombined);
-      
+    else
+        [fit_pos, fit_neg, fit_combined] = ...
+        CPM_fit_model(train_behav, [], 0, ...
+        train_sumpos, train_sumneg, train_sumcombined);
+    end
+    
     % apply model to test set (Step 7 - Shen et al., 2017)
-    [pred_pos, pred_neg, pred_combined] = ...
-        CPM_apply_model(test_mats, test_covars, no_covars, ...
-        pos_mask, neg_mask, fit_pos, fit_neg, fit_combined);
+    % account for covars in model application if adjusted for in Step 6
+    if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
+        [pred_pos, pred_neg, pred_combined] = ...
+            CPM_apply_model(test_mats, test_covars, no_covars, ...
+            pos_mask, neg_mask, fit_pos, fit_neg, fit_combined);
+    else
+        [pred_pos, pred_neg, pred_combined] = ...
+            CPM_apply_model(test_mats, [], 0, ...
+            pos_mask, neg_mask, fit_pos, fit_neg, fit_combined);
+    end
     
     % store predictions from current fold
     behav_pred_pos(ix_test) = pred_pos;
