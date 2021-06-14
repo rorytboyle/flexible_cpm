@@ -37,7 +37,9 @@ function [pos_edges_all, neg_edges_all, pos_edges_thresh, neg_edges_thresh] = ..
 % Author: Rory Boyle
 % Contact: rorytboyle@gmail.com
 % Date: 25/01/2021
-% Updated: 31/05/2021 (
+% Updated: 14/06/2021 (changed freq_thresh to be decimal percentage i.e.
+% between 0 and 1, so that it was coherent with thresh for feature
+% selection in fs_select_sparsity_CPM.m and run_flexible_CPM.m
 %
 % Preallocate arrays
 pos_edge_freq = zeros(no_node, no_node);
@@ -71,7 +73,7 @@ pos_edges_all = [freqs_pos pos_lin_ix pos_row pos_col];
 neg_edges_all = [freqs_neg neg_lin_ix neg_row neg_col];
 
 % calculate required number of folds from frequency threshold
-folds_thresh = k_all * (freq_thresh/100);
+folds_thresh = k_all * freq_thresh;
 
 % get thresholded edges
 pos_edges_thresh = pos_edges_all((pos_edges_all(:,1) >= folds_thresh),:);
