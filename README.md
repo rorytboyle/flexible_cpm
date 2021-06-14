@@ -2,9 +2,10 @@
 Modified connectome-based predictive model
 
 1) Enables inclusion of covariates at feature selection or model-building stage or both stages
-2) Permits different choices of k-fold cross-validation schemes
-3) Returns weights (i.e. regression coefficients) from trained model for external validation on other datasets
-4) Creates masks for visualisation in bioimagesuite and enables creation of masks when restricted connectivity matrices are used (i.e. when nodes are removed from the original 268 x 268 connectivity matrix) 
+2) Provides ability to threshold edges based on p-values (e.g. only select edges with  p-values for correlation between edge and target variable < .01) or sparsity (e.g. select top 7.5% of edges based on correlation bewteen edge and target variable)
+3) Permits different choices of k-fold cross-validation schemes
+4) Returns weights (i.e. regression coefficients) from trained model for external validation on other datasets
+5) Creates masks for visualisation in bioimagesuite and enables creation of masks when restricted connectivity matrices are used (i.e. when nodes are removed from the original 268 x 268 connectivity matrix) 
 
 Functions with _prefix_ "_CPM___" are adapted/generalised functions of code written by Xilin Shen and Emily Finn and is uploaded here with their permission (codeshare_behavioral_prediction.m as obtained here: 
 https://www.nitrc.org/frs/download.php/8071/nn_code.zip). This code is therefore copyrighted to Xilin Shen and Emily Finn as detailed below:
