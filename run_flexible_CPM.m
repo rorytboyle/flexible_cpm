@@ -1,8 +1,8 @@
 function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
     parameters_pos, parameters_neg, parameters_combined,...
     pos_mask_all, neg_mask_all, no_node, no_covars] = ...
-    run_flexible_CPM(all_behav, all_mats, all_covars, k, thresh,...
-    adjust_stage)
+    run_flexible_CPM(all_behav, all_mats, all_covars, k, thresh_type,...
+    thresh, adjust_stage)
 % Runs connectome-based predictive modelling with cross-validation. Enables
 % choice of different k-fold cross-validation schemes (can specify LOOCV by
 % calling k = number of participants) and allows for covariates to be
@@ -24,7 +24,13 @@ function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
 %                   cross-validation, k = 5 will run 5-fold, and k = number
 %                   of participants will run leave-one-out
 %                   cross-validation.
-% thresh =          (double) p-value for feature selection threshold.
+% thresh_type =     (string) specifies type of feature selection threshold,
+%                   must be either 'p-value' or 'sparsity'
+% thresh =          (double) If thresh_type = 'p-value, thresh specifies 
+%                   p-value for feature selection threshold. If thresh_type
+%                   = 'sparsity', thresh specifies % of most highly
+%                   correlated edges to be retained (i.e. % threshold for
+%                   sparsity threshold).
 % adjust_stage      (string) specifies stage of CPM at which covariates
 %                   should be adjusted for. 'relate' will adjust for 
 %                   covariates at the feature selection step (step 3) by 
@@ -68,8 +74,8 @@ function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
 % Author: Rory Boyle
 % Contact: rorytboyle@gmail.com
 % Date: 24/01/2021
-% Last updated: 10/02/2021 added functionality to adjust for covariates at
-% feature selection step (step 3).
+% Last updated: 14/06/2021 added functionality to threshold based on edge
+% sparsity (step 3).
 %
 %% 1) Prepare cross-validated CPM
 % preallocate arrays
@@ -105,7 +111,14 @@ for fold = 1:k
     end
 
     % feature selection - select edges (Step 4 - Shen et al. 2017)
-    [pos_mask, neg_mask] = CPM_fs_select(r_mat, p_mat, thresh, no_node);
+    if strcmp(thresh_type, 'p-value');
+        [pos_mask, neg_mask] = CPM_fs_select_pvalue(r_mat, p_mat,...
+            thresh, no_node);
+        
+    else strcmp(thresh_type, 'sparsity');
+        [pos_mask, neg_mask] = fs_select_sparsity_CPM(r_mat, p_mat,...
+            thresh, no_node);  
+    end
     
     % calculate network strength in training set (Step 5 - Shen et al.
     % 2017)
