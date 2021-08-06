@@ -1,7 +1,7 @@
 function [cpm_predictors, file_order] = prep_predictors_CPM(folder,...
     n, save_path)
 % Reads in .csv files containing z-scored connectivity matrices in order
-% to run connectome-based predictive modeling using YaleMRRC CPM code.
+% to run connectome-based predictive modeling using flexible_CPM code.
 %
 % INPUT:
 % folder =          (string) file path for directory containing .csv files
