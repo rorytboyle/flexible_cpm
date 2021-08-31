@@ -21,11 +21,28 @@ function [pos_mask_all_iterations, neg_mask_all_iterations,...
 %                   cross-validation.
 % iterations =      (double) number of iterations of CPM with k-fold CV.
 %
-% OUTPUT: TO BE FINISHED
-%
+% OUTPUT:
+% pos_mask_all_iterations =     (array) iterations*1 array of zeros
+% neg_mask_all_iterations =     same as above.
+% int_pos_ntwrk_all =           (array) iterations*1 array of zeros
+% int_neg_ntwrk_all =           same as above.
+% int_combined_ntwrk_all =      same as above.
+% slope_pos_ntwrk_all =         same as above.
+% slope_neg_ntwrk_all =         same as above.
+% slope_combined_ntwrk_all =    same as above.
+% slope_pos_covars_all =        (array) iterations*(number of covars) array
+%                               of zeros. If no covars are specified, an 
+%                               empty array will be returned.
+% slope_neg_covars_all =        same as above.
+% slope_combined_covars_all =   same as above.
+
 % Author: Rory Boyle
 % Contact: rorytboyle@gmail.com
 % Date: 28/05/2021
+% Updated: 31/08/2021 changed slope_pos_covars_all(and same arrays for neg
+% and combined networks) to use zeros(iterations, n_covars) instead of
+% zeros(iterations, size(all_covars, 2)) for clarity. Updated description
+% of function output.
 
 % Get number of nodes
 n_nodes = size(all_mats, 1);
@@ -41,8 +58,8 @@ int_combined_ntwrk_all = zeros(iterations,1);
 slope_pos_ntwrk_all = zeros(iterations,1);
 slope_neg_ntwrk_all = zeros(iterations,1);
 slope_combined_ntwrk_all = zeros(iterations,1);
-slope_pos_covars_all = zeros(iterations,size(all_covars, 2));
-slope_neg_covars_all = zeros(iterations,size(all_covars, 2));
-slope_combined_covars_all = zeros(iterations,size(all_covars, 2));
+slope_pos_covars_all = zeros(iterations,n_covars);
+slope_neg_covars_all = zeros(iterations,n_covars);
+slope_combined_covars_all = zeros(iterations,n_covars);
 
 end
