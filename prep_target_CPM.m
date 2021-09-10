@@ -50,6 +50,7 @@ if endsWith(file_order{1}, '.csv')
         new_file = strsplit(current_file, '.');
         cleaned_file_order{i} = new_file{1};
     end
+    file_order = cleaned_file_order;
 end
     
 % Convert file_order to double
