@@ -36,12 +36,13 @@ function [cpm_target, final_ppts, ix_ppts_to_keep] = ...
 % Date: 04/01/2021
 % Updated: 10/09/2021 to remove .csv extension from file names in
 % file_order (if present)
+
 %% 1) Prepare participant ids from file_order
 % Check if file names contain .csv extension and if so, remove extension
 if endsWith(file_order{1}, '.csv')
     
 % prep new array of cleaned file names
-cleaned_file_order = cell(size(file_order));
+    cleaned_file_order = cell(size(file_order));
 
     % loop through file names and remove extension
     for i = 1:length(file_order)
