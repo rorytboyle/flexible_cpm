@@ -6,6 +6,8 @@ Modified connectome-based predictive model
 3) Permits different choices of k-fold cross-validation schemes
 4) Returns weights (i.e. regression coefficients) from trained model for external validation on other datasets
 5) Creates masks for visualisation in bioimagesuite and enables creation of masks when restricted connectivity matrices are used (i.e. when nodes are removed from the original 268 x 268 connectivity matrix) 
+6) Enables leave-site-out cross-validation
+7) Optimises CPM for larger datasets via the use of parallel computing
 
 Functions with _prefix_ "_CPM___" are adapted/generalised functions of code written by Xilin Shen and Emily Finn and is uploaded here with their permission (codeshare_behavioral_prediction.m as obtained here: 
 https://www.nitrc.org/frs/download.php/8071/nn_code.zip). This code is therefore copyrighted to Xilin Shen and Emily Finn as detailed below:
