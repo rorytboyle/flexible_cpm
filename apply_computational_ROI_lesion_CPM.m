@@ -8,13 +8,11 @@ function [lesioned_mats] = apply_computational_ROI_lesion_CPM(...
 % such as poor scanner coverage. For example, if many scans in a dataset 
 % have poor coverage of the cerebellum for a large number of participants, 
 % then this can be used to remove all nodes from the cerebellum. 
-% ROI labels found here
-% https://www.nitrc.org/frs/download.php/8072/shen_268_parcellation_networklabels.csv
-% Nodes are assigned an anatomical label using the Tailarach Atlas as 
-% in Salehi et al. (2020) Neuroimage: 
 % ROI labels are listed in Table S1 of Salehi et al. (2020), url here:
 % https://ars.els-cdn.com/content/image/1-s2.0-S1053811919308249-mmc1.xlsx
-
+% Function requires this .xlsx file
+% Nodes are assigned an anatomical label using the Tailarach Atlas as 
+% in Salehi et al. (2020) Neuroimage: https://doi.org/10.1016/j.neuroimage.2019.116366
 % 
 % INPUT:
 % all_mats =                (array) m * m * n array where m = number of 
@@ -27,7 +25,9 @@ function [lesioned_mats] = apply_computational_ROI_lesion_CPM(...
 %                           See description above for further info on the 
 %                           ROI labels. For example, if you want to remove
 %                           all nodes within the cerebellum, then
-%                           ROI_to_lesion = {'Cerebellum'}.
+%                           ROI_to_lesion = {'Cerebellum'}. For an ROI to
+%                           be removed, it must be listed within the
+%                           .xlsx file
 % ROI_labels =              (string) file path for .csv file containing
 %                           ROI labels: https://ars.els-cdn.com/content/image/1-s2.0-S1053811919308249-mmc1.xlsx
 %

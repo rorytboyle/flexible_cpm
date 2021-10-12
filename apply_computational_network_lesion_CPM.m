@@ -7,6 +7,7 @@ function [lesioned_mats] = apply_computational_network_lesion_CPM(...
 % phenotype.
 % Network labels found here
 % https://www.nitrc.org/frs/download.php/8072/shen_268_parcellation_networklabels.csv
+% Function requires this .csv file
 % Network numbers are outlined in Finn et al. (2015) Nature Neuroscience
 % https://doi.org/10.1038/nn.4135 and correspond to following functional 
 % networks
