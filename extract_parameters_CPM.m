@@ -2,7 +2,7 @@ function [int_pos_ntwrk, int_neg_ntwrk, int_combined_ntwrk,...
     slope_pos_ntwrk, slope_neg_ntwrk, slope_combined_ntwrk,...
     slope_pos_covars, slope_neg_covars, slope_combined_covars] = ...
     extract_parameters_CPM(parameters_pos, parameters_neg,...
-    parameters_combined, no_covars)
+    parameters_combined, adjust_stage, no_covars)
 % Calculates average model parameters (i.e. regression coefficients) across
 % folds that can then be applied to independent datasets for external
 % validation.
@@ -11,6 +11,7 @@ function [int_pos_ntwrk, int_neg_ntwrk, int_combined_ntwrk,...
 % parameters_pos =      as described in run_flexible_CPM.
 % parameters_neg =      as described in run_flexible_CPM.
 % parameters_combined = as described in run_flexible_CPM.
+% adjust_stage =        as described in run_flexible_CPM.
 % no_covars =           as described in CPM_prep_arrays. 
 %
 % OUTPUT:
@@ -32,6 +33,7 @@ function [int_pos_ntwrk, int_neg_ntwrk, int_combined_ntwrk,...
 % Author: Rory Boyle
 % Contact: rorytboyle@gmail.com
 % Date: 25/01/2021
+% Updated: 01/06/2021
 %
 % Get average intercepts for each network strength model across folds
 int_pos_ntwrk = mean(parameters_pos(:,1));
@@ -44,12 +46,21 @@ slope_neg_ntwrk = mean(parameters_neg(:,2));
 slope_combined_ntwrk = mean(parameters_combined(:,2));
 
 % Get average slopes for covariates in each model across folds
-if no_covars > 0
+if no_covars > 0 && strcmp(adjust_stage, 'fit')
     slope_pos_covars =  mean(parameters_pos(:,3:end));
     slope_neg_covars = mean(parameters_neg(:,3:end));
     slope_combined_covars = mean(parameters_combined(:,3:end));
+    
+% this block necessary for general analysis script to run correctly as
+% covar parameters will require some value (e.g. NaN)
+elseif no_covars > 0 && strcmp(adjust_stage, 'relate')
+    slope_pos_covars = nan(1,no_covars);
+    slope_neg_covars = nan(1,no_covars);
+    slope_combined_covars = nan(1,no_covars);
+    
 else
     slope_pos_covars = [];
     slope_neg_covars = [];
     slope_combined_covars = [];
+end
 end
