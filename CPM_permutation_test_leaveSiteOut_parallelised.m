@@ -18,12 +18,11 @@ function [perm_p_pos, perm_p_neg, perm_p_combined,random_pos_r,random_neg_r,...
 % all_behav =               as described in run_flexible_CPM.   
 % all_mats =                as described in run_flexible_CPM. 
 % all_covars =              as described in run_flexible_CPM.
-% k =                       as described in run_flexible_CPM.
+% num_sites =               as described in run_flexible_CPM_leaveSiteOut
+% sites =                   as described in run_flexible_CPM_leaveSiteOut
 % thresh_type =             as described in run_flexible_CPM.
 % thresh =                  as described in run_flexible_CPM.
 % adjust_stage =            as described in run_flexible_CPM.
-% perm_iterations =         (double) number specifying iterations of random
-%                           permutation.
 % true_r_pos =              (float) Pearson's r value for true correlation
 %                           between target variable and positive network
 %                           strength predictions.
@@ -31,6 +30,8 @@ function [perm_p_pos, perm_p_neg, perm_p_combined,random_pos_r,random_neg_r,...
 %                           predictions.
 % true_r_combined =         same as above for combined network strength
 %                           predictions.
+% perm_iterations =         (double) number specifying iterations of random
+%                           permutation.
 %
 % OUTPUT:
 % perm_p_pos =              (float) permuted p-value for positive network
