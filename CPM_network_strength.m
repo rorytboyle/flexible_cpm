@@ -2,7 +2,10 @@ function [train_sumpos, train_sumneg, train_sumcombined] = ...
         CPM_network_strength(train_mats, pos_mask, neg_mask, ix_train)
 % Calculates network strength values for positive, negative, and combined
 % networks. Network strength = summed connectivity of edges that are
-% related to target variable. 
+% related to target variable. Combined network strength is calculated using
+% the method described by Greene et al. 2018 Nature Communications
+% https://doi.org/10.1038/s41467-018-04920-3 where combined network strength
+% is the difference between positive and negative network strength.
 %
 % INPUT:
 % train_mats =          as described in CPM_cv_split.
