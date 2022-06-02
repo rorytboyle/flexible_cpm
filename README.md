@@ -16,6 +16,6 @@ Copyright 2015 Xilin Shen and Emily Finn
 This code is released under the terms of the GNU GPL v2. This code is not FDA approved for clinical use; it is provided freely for research purposes. If using this in a publication please reference this properly as: 
 Finn ES, Shen X, Scheinost D, Rosenberg MD, Huang, Chun MM,Papademetris X & Constable RT. (2015). Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity. Nature Neuroscience 18, 1664-1671.
 
-All other functions and scripts (e.g. functions with _suffix_ "__CPM_") are original and this code is also released under the terms of the GNU GPL v2
+All other functions and scripts (e.g. functions with _suffix_ "__CPM_" - including run_flexible_CPM_leaveSiteOut) are original and this code is also released under the terms of the GNU GPL v2
 
 Code is written and tested on MATLAB R2020a
