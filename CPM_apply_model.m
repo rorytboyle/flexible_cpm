@@ -1,6 +1,7 @@
 function [pred_pos, pred_neg, pred_combined] = ...
     CPM_apply_model(test_mats, test_covars, no_covars, ...
-        pos_mask, neg_mask, fit_pos, fit_neg, fit_combined);
+        pos_mask, neg_mask, fit_pos, fit_neg, fit_combined)
+% Date edited: 05/06/2022
 % Applies fitted model parameters from the training set to participants in
 % the test set.
 %
@@ -50,28 +51,6 @@ pred_pos = fit_pos(2)*test_sumpos + fit_pos(1);
 pred_neg = fit_neg(2)*test_sumneg + fit_neg(1);
 pred_combined = fit_combined(2)*test_sumcombined + fit_combined(1);
 
-% apply fitted model parameters to covariates and add covariates to
-% predicted values
-if no_covars>0
-
-    covar_pred_pos = 0;
-    covar_pred_neg = 0;
-    covar_pred_combined = 0;
-
-    % multiply regression weights for covars by covars in test set
-    for covar = 1:no_covars
-        covar_pred_pos = covar_pred_pos + fit_pos(covar+2)*test_covars(covar);
-        covar_pred_neg = covar_pred_neg + fit_neg(covar+2)*test_covars(covar);
-        covar_pred_combined = covar_pred_combined + fit_combined(covar+2)*test_covars(covar);
-    end
-    
-    % add fitted values for covars to predicted values
-    pred_pos = pred_pos + covar_pred_pos;
-    pred_neg = pred_neg + covar_pred_neg;
-    pred_combined = pred_combined + covar_pred_combined;
-    
-end
-
 % Reshape prediction arrays - when k-fold (e.g. 5-fold or 10-fold)
 % cross-validation used, prediction arrays are saved as 1*1*n arrays where
 % n = number of test participants. This will convert them to n * 1 arrays.
@@ -79,4 +58,26 @@ test_ppts = size(test_mats, 3);
 pred_pos = reshape(pred_pos, test_ppts, 1);
 pred_neg = reshape(pred_neg, test_ppts, 1);
 pred_combined = reshape(pred_combined, test_ppts, 1);
+
+% apply fitted model parameters to covariates and add covariates to
+% predicted values
+if no_covars>0
+    
+    covar_pred_pos = zeros(test_ppts,1); 
+    covar_pred_neg = zeros(test_ppts,1); 
+    covar_pred_combined = zeros(test_ppts,1); 
+
+    % multiply regression weights for covars by covars in test set
+    for covar = 1:no_covars
+        covar_pred_pos = covar_pred_pos + fit_pos(covar+2)*test_covars(:,covar);
+        covar_pred_neg = covar_pred_neg + fit_neg(covar+2)*test_covars(:,covar);
+        covar_pred_combined = covar_pred_combined + fit_combined(covar+2)*test_covars(:,covar);
+    end
+  
+    % add fitted values for covars to predicted values
+    pred_pos = pred_pos + covar_pred_pos;
+    pred_neg = pred_neg + covar_pred_neg;
+    pred_combined = pred_combined + covar_pred_combined;
+    
+end
 end
