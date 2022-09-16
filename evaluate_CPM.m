@@ -30,7 +30,7 @@ combined_mdl = fitlm(behav_pred_combined,all_behav);
 rsq_combined = combined_mdl.Rsquared.Ordinary;
 
 %% 3) Mean Absolute Error (MAE)
-mae_pos = (mean(abs(all_behav - behav_pred_pos)))/length(all_behav);
-mae_neg = (mean(abs(all_behav - behav_pred_neg)))/length(all_behav);
-mae_combined = (mean(abs(all_behav - behav_pred_combined)))/length(all_behav);
+mae_pos = mean(abs(all_behav - behav_pred_pos));
+mae_neg = mean(abs(all_behav - behav_pred_neg));
+mae_combined = mean(abs(all_behav - behav_pred_combined));
 end
