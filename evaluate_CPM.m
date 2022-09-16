@@ -11,6 +11,7 @@ function [R_pos, P_pos, R_neg, P_neg, R_combined, P_combined,...
 % Date: 24/01/2021
 % Updated: 31/05/2021 to remove rsq_p_pos, rsq_p_neg, rsq_p_combined as
 % values equivalent to p-value from Pearson's correlation
+% Updated 15/09/2022 to correct MAE formula so that MAE is divided by sample size
 %
 %% 1)Pearson's correlations
 [R_pos, P_pos] = corr(behav_pred_pos,all_behav);
@@ -29,7 +30,7 @@ combined_mdl = fitlm(behav_pred_combined,all_behav);
 rsq_combined = combined_mdl.Rsquared.Ordinary;
 
 %% 3) Mean Absolute Error (MAE)
-mae_pos = mean(abs(all_behav - behav_pred_pos));
-mae_neg = mean(abs(all_behav - behav_pred_neg));
-mae_combined = mean(abs(all_behav - behav_pred_combined));
+mae_pos = (mean(abs(all_behav - behav_pred_pos)))/length(all_behav);
+mae_neg = (mean(abs(all_behav - behav_pred_neg)))/length(all_behav);
+mae_combined = (mean(abs(all_behav - behav_pred_combined)))/length(all_behav);
 end
