@@ -1,5 +1,5 @@
 # flexible_cpm
-Modified connectome-based predictive model
+Modified connectome-based predictive model. See preprint of book chapter outlining this method: https://osf.io/ay95f/
 
 1) Enables inclusion of covariates at feature selection or model-building stage or both stages
 2) Provides ability to threshold edges based on p-values (e.g. only select edges with  p-values for correlation between edge and target variable < .01) or sparsity (e.g. select top 7.5% of edges based on correlation bewteen edge and target variable)
