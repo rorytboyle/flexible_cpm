@@ -34,6 +34,7 @@ function [int_pos_ntwrk, int_neg_ntwrk, int_combined_ntwrk,...
 % Contact: rorytboyle@gmail.com
 % Date: 25/01/2021
 % Updated: 01/06/2021
+% Updated: 14/07/2023
 %
 % Get average intercepts for each network strength model across folds
 int_pos_ntwrk = mean(parameters_pos(:,1));
@@ -46,7 +47,7 @@ slope_neg_ntwrk = mean(parameters_neg(:,2));
 slope_combined_ntwrk = mean(parameters_combined(:,2));
 
 % Get average slopes for covariates in each model across folds
-if no_covars > 0 && strcmp(adjust_stage, 'fit')
+if no_covars > 0 && (strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both'))
     slope_pos_covars =  mean(parameters_pos(:,3:end));
     slope_neg_covars = mean(parameters_neg(:,3:end));
     slope_combined_covars = mean(parameters_combined(:,3:end));
