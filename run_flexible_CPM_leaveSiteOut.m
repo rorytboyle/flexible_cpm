@@ -76,16 +76,33 @@ function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
 % Date: 24/01/2021
 % Last updated: 14/06/2021 added functionality to threshold based on edge
 % sparsity (step 3).
+% Edited Date:  19/09/2022
 %
 %% 1) Prepare cross-validated CPM
-% preallocate arrays
-[no_sub, no_node, no_covars, behav_pred_pos, behav_pred_neg,...
+if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
+    % preallocate arrays
+    [no_sub, no_node, ~, behav_pred_pos, behav_pred_neg,...
+        behav_pred_combined, ~, ~, ~, pos_mask_all, neg_mask_all] =...
+        CPM_prep_arrays(all_mats, all_covars, num_sites, adjust_stage);
+
+    parameters_pos = zeros(num_sites, max(sites)+width(all_covars)); % 2 + max(sites) - 2(dummy variable and leave site)
+    parameters_neg = zeros(num_sites, max(sites)+width(all_covars));
+    parameters_combined = zeros(num_sites, max(sites)+width(all_covars));
+else
+    [no_sub, no_node, ~, behav_pred_pos, behav_pred_neg,...
     behav_pred_combined, parameters_pos, parameters_neg,...
     parameters_combined, pos_mask_all, neg_mask_all] =...
     CPM_prep_arrays(all_mats, all_covars, num_sites, adjust_stage);
+    
+end
 
 % specify cross-validation scheme
 % kfold_partition = cvpartition(no_sub, 'KFold', k);
+site_covars = zeros(length(sites),max(sites));
+for s = 1:max(sites)
+    site_covars(sites == s,s) = 1;
+end
+
 
 %% 2) Run cross-validated CPM
 % loop through each fold and run CPM
@@ -93,11 +110,18 @@ for fold = 1:num_sites
     % print message to update
     fprintf('\n Leaving out fold # %6.3f\n',fold);
     
+    % make site covars 
+    site_lso_covars = site_covars; 
+    site_lso_covars(:,fold) = []; % remove test site 
+    site_lso_covars(:,end) = []; % remove the last site (dummy variable)
+    lso_all_covars = [all_covars,site_lso_covars];
+    no_covars = width(lso_all_covars);
+    
     % divide data into training and test sets (Step 2 - Shen et al. 2017)
     [ix_train, ix_test, train_behav, train_mats, train_vcts, ...
         train_covars, test_behav, test_mats, test_covars] = ...
-        CPM_cv_split_lsocv(all_behav, all_mats, all_covars, no_covars,fold,sites);
-    
+        CPM_cv_split_lsocv(all_behav, all_mats, lso_all_covars, no_covars,fold,sites);
+     
     % feature selection - relate edges to target variable (Step 3 - Shen et
     % al. 2017)
     % use partial correlation if specified - otherwise use normal

@@ -9,6 +9,7 @@ clear; clc;
 % Emails: rorytboyle@gmail.com & wengy@tcd.ie
 % Date: 07/10/2021
 % Date edited: 20/05/2022
+% Date edited: 19/09/2022
 %% 1) Load data and prepare variables
 % Specify file paths
 % .csv file containing target variable should have two columns (col 1 = 
@@ -153,10 +154,14 @@ if strcmp(adjust_stage, 'relate')
 else 
     [~, ~, int_pos_ntwrk, int_neg_ntwrk,...
     int_combined_ntwrk, slope_pos_ntwrk, slope_neg_ntwrk, ...
-    slope_combined_ntwrk, slope_pos_covars, slope_neg_covars,...
-    slope_combined_covars] = prep_parameters_arrays_CPM(all_mats,...
-    all_covars, k, iterations);   
+    slope_combined_ntwrk, ~, ~, ~] = prep_parameters_arrays_CPM(all_mats,...
+    all_covars, k, iterations);
+    
+    slope_pos_covars = zeros(iterations,max(sites)+width(all_covars)-2);
+    slope_neg_covars = zeros(iterations,max(sites)+width(all_covars)-2);
+    slope_combined_covars = zeros(iterations,max(sites)+width(all_covars)-2);
 end
+
 
 %% 4) Run CPM, evaluate model performance, extract selected edges + model parameters
 parfor i = 1:iterations
